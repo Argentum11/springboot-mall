@@ -5,6 +5,7 @@ import com.leo.springbootmall.model.Product;
 import com.leo.springbootmall.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,5 +55,17 @@ public class ProductController {
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    @DeleteMapping("/products/{productId}")
+    public ResponseEntity<?> deleteProduct(@PathVariable Integer productId) {
+        // we don't need to check if product exists because DELETE should succeed if the resource ends up not existing.
+
+        // delete product
+        productService.deleteProductById(productId);
+
+        // return delete result
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("product deleted");
+
     }
 }
