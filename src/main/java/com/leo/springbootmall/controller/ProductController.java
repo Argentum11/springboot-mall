@@ -35,4 +35,24 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    @PutMapping("/products/{productId}")
+    public ResponseEntity<Product> updateProduct(@PathVariable Integer productId, @RequestBody @Valid ProductRequest productRequest) {
+        // verify if the product exists
+        Product originProduct = productService.getProductById(productId);
+        if (originProduct == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        // update product
+        productService.updateProduct(productId, productRequest);
+
+        // return update result
+        Product updatedProduct = productService.getProductById(productId);
+        if (updatedProduct != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(updatedProduct);
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

@@ -31,3 +31,4 @@ INSERT INTO product (product_name, category, image_url, price, stock, descriptio
 - products
   - get product
   - add product
+  - update product
