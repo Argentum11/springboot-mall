@@ -22,6 +22,13 @@ public class ProductDaoImpl implements ProductDao {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
+    public List<Product> getProducts() {
+        String searchSql = "SELECT product_id, product_name, category, image_url, price, stock, description, created_date, last_modified_date FROM product";
+        List<Product> productList = namedParameterJdbcTemplate.query(searchSql, new ProductRowMapper());
+        return productList;
+    }
+
+    @Override
     public Product getProductById(Integer productId) {
         String searchSql = "SELECT product_id, product_name, category, image_url, price, stock, description, created_date, " +
                 "last_modified_date FROM product WHERE product_id=:productId";
@@ -76,9 +83,9 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public void deleteProductById(Integer productId){
+    public void deleteProductById(Integer productId) {
         String deleteSql = "DELETE FROM product WHERE product_id = :productId";
-        Map<String, Object> map =  new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("productId", productId);
 
         namedParameterJdbcTemplate.update(deleteSql, map);

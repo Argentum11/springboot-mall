@@ -33,3 +33,5 @@ INSERT INTO product (product_name, category, image_url, price, stock, descriptio
   - add product
   - update product
   - delete product
+  - search products
+    - get all products
