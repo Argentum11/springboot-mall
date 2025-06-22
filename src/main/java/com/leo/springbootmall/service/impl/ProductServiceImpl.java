@@ -1,6 +1,7 @@
 package com.leo.springbootmall.service.impl;
 
 import com.leo.springbootmall.dao.ProductDao;
+import com.leo.springbootmall.dto.ProductQueryParams;
 import com.leo.springbootmall.dto.ProductRequest;
 import com.leo.springbootmall.model.Product;
 import com.leo.springbootmall.service.ProductService;
@@ -15,8 +16,8 @@ public class ProductServiceImpl implements ProductService {
     private ProductDao productDao;
 
     @Override
-    public List<Product> getProducts() {
-        return productDao.getProducts();
+    public List<Product> getProducts(ProductQueryParams productQueryParams) {
+        return productDao.getProducts(productQueryParams);
     }
 
     @Override

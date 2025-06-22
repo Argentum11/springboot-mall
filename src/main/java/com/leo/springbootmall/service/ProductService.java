@@ -1,13 +1,13 @@
 package com.leo.springbootmall.service;
 
+import com.leo.springbootmall.dto.ProductQueryParams;
 import com.leo.springbootmall.dto.ProductRequest;
 import com.leo.springbootmall.model.Product;
-import org.springframework.data.relational.core.sql.In;
 
 import java.util.List;
 
 public interface ProductService {
-    List<Product> getProducts();
+    List<Product> getProducts(ProductQueryParams productQueryParams);
 
     Product getProductById(Integer productId);
 
