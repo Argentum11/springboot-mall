@@ -5,6 +5,8 @@ import com.leo.springbootmall.constant.ProductCategory;
 public class ProductQueryParams {
     private ProductCategory category;
     private String search;
+    private String orderBy;
+    private Boolean ascending;
 
     public ProductCategory getCategory() {
         return category;
@@ -20,5 +22,21 @@ public class ProductQueryParams {
 
     public void setSearch(String search) {
         this.search = search;
+    }
+
+    public String getOrderBy() {
+        return orderBy;
+    }
+
+    public void setOrderBy(String orderBy) {
+        this.orderBy = orderBy;
+    }
+
+    public Boolean getAscending() {
+        return ascending;
+    }
+
+    public void setAscending(Boolean ascending) {
+        this.ascending = ascending;
     }
 }
