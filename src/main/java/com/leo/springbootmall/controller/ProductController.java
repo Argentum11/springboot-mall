@@ -6,14 +6,19 @@ import com.leo.springbootmall.dto.ProductRequest;
 import com.leo.springbootmall.model.Product;
 import com.leo.springbootmall.service.ProductService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@Validated
 public class ProductController {
     @Autowired
     private ProductService productService;
@@ -25,12 +30,17 @@ public class ProductController {
             @RequestParam(required = false) String search,
             // sorting
             @RequestParam(defaultValue = "created_date") String orderBy,
-            @RequestParam(defaultValue = "false") Boolean ascending) {
+            @RequestParam(defaultValue = "false") Boolean ascending,
+            // pagination
+            @RequestParam(defaultValue = "1") @Min(1) Integer page,
+            @RequestParam(defaultValue = "5") @Max(100) @Min(0) Integer limit) {
         ProductQueryParams productQueryParams = new ProductQueryParams();
         productQueryParams.setCategory(category);
         productQueryParams.setSearch(search);
         productQueryParams.setOrderBy(orderBy);
         productQueryParams.setAscending(ascending);
+        productQueryParams.setPage(page);
+        productQueryParams.setLimit(limit);
 
         List<Product> productList = productService.getProducts(productQueryParams);
         return ResponseEntity.status(HttpStatus.OK).body(productList);

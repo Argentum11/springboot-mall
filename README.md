@@ -40,9 +40,10 @@ INSERT INTO product (product_name, category, image_url, price, stock, descriptio
   - update product
   - delete product
   - fetch products
-    - filter
+    - filtering
       - category
       - name
     - sorting
       - sort by column
       - ascending/descending order
+    - pagination
