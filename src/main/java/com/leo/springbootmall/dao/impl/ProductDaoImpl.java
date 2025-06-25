@@ -43,13 +43,31 @@ public class ProductDaoImpl implements ProductDao {
         searchSql += " ORDER BY " + productQueryParams.getOrderBy() + sort;
 
         // pagination
-        Integer offset = (productQueryParams.getPage()-1) * productQueryParams.getLimit();
+        Integer offset = (productQueryParams.getPage() - 1) * productQueryParams.getLimit();
         searchSql += " LIMIT :limit OFFSET :offset";
         map.put("limit", productQueryParams.getLimit());
         map.put("offset", offset);
 
         List<Product> productList = namedParameterJdbcTemplate.query(searchSql, map, new ProductRowMapper());
         return productList;
+    }
+
+    public Integer countProduct(ProductQueryParams productQueryParams) {
+        String searchSql = "SELECT count(*) FROM product WHERE 1=1";
+        Map<String, Object> map = new HashMap<>();
+
+        // filtering
+        if (productQueryParams.getCategory() != null) {
+            searchSql += " AND category = :category";
+            map.put("category", productQueryParams.getCategory().name());
+        }
+
+        if (productQueryParams.getSearch() != null) {
+            searchSql += " AND product_name LIKE :search";
+            map.put("search", "%" + productQueryParams.getSearch() + "%");
+        }
+        Integer productAmount = namedParameterJdbcTemplate.queryForObject(searchSql, map, Integer.class);
+        return productAmount;
     }
 
     @Override

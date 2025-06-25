@@ -47,3 +47,7 @@ INSERT INTO product (product_name, category, image_url, price, stock, descriptio
       - sort by column
       - ascending/descending order
     - pagination
+      - page
+      - limit
+      - total
+      - result list

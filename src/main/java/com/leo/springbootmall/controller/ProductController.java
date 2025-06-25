@@ -5,11 +5,11 @@ import com.leo.springbootmall.dto.ProductQueryParams;
 import com.leo.springbootmall.dto.ProductRequest;
 import com.leo.springbootmall.model.Product;
 import com.leo.springbootmall.service.ProductService;
+import com.leo.springbootmall.util.PagedResult;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.relational.core.sql.In;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -24,7 +24,7 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping("/products")
-    public ResponseEntity<List<Product>> getProducts(
+    public ResponseEntity<PagedResult<Product>> getProducts(
             // filtering
             @RequestParam(required = false) ProductCategory category,
             @RequestParam(required = false) String search,
@@ -43,7 +43,15 @@ public class ProductController {
         productQueryParams.setLimit(limit);
 
         List<Product> productList = productService.getProducts(productQueryParams);
-        return ResponseEntity.status(HttpStatus.OK).body(productList);
+        Integer total = productService.countProduct(productQueryParams);
+
+        PagedResult<Product> pagedResult = new PagedResult<>();
+        pagedResult.setPage(page);
+        pagedResult.setLimit(limit);
+        pagedResult.setTotal(total);
+        pagedResult.setResults(productList);
+
+        return ResponseEntity.status(HttpStatus.OK).body(pagedResult);
     }
 
     @GetMapping("/products/{productId}")
