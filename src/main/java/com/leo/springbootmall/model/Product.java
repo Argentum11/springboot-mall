@@ -13,6 +13,7 @@ public class Product {
     private Integer stock;
     private String description;
     private Date createdDate;
+    private Date lastModifiedDate;
 
     public String getProductName() {
         return productName;
@@ -85,6 +86,4 @@ public class Product {
     public void setProductId(Integer productId) {
         this.productId = productId;
     }
-
-    private Date lastModifiedDate;
 }
