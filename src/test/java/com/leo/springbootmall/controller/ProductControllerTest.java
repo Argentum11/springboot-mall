@@ -160,4 +160,20 @@ class ProductControllerTest {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(404));
     }
+
+    @Test
+    @Transactional
+    public void deleteProductSuccess() throws Exception {
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/products/{productId}", 1);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(204));
+    }
+
+    @Test
+    @Transactional
+    public void deleteProductNotFound() throws Exception {
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/products/{productId}", -1);
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(204));
+    }
 }
