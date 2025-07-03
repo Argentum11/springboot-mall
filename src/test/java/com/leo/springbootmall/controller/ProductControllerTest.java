@@ -1,13 +1,20 @@
 package com.leo.springbootmall.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.leo.springbootmall.constant.ProductCategory;
+import com.leo.springbootmall.model.Product;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.awt.*;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
@@ -22,6 +29,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class ProductControllerTest {
     @Autowired
     private MockMvc mockMvc;
+
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     public void getProductSuccess() throws Exception {
@@ -45,5 +54,49 @@ class ProductControllerTest {
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(404));
+    }
+
+    @Test
+    @Transactional
+    public void addProductSuccess() throws Exception {
+        Product newProduct = new Product();
+        newProduct.setProductName("kiwi");
+        newProduct.setCategory(ProductCategory.FOOD);
+        newProduct.setImageUrl("www.google.com");
+        newProduct.setPrice(10);
+        newProduct.setStock(100);
+        newProduct.setDescription("a healthy fruit");
+        String newProductString = objectMapper.writeValueAsString(newProduct);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(newProductString);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(201))
+                .andExpect(jsonPath("$.productName", equalTo(newProduct.getProductName())))
+                .andExpect(jsonPath("$.category", equalTo(newProduct.getCategory().name())))
+                .andExpect(jsonPath("$.imageUrl", equalTo(newProduct.getImageUrl())))
+                .andExpect(jsonPath("$.price", equalTo(newProduct.getPrice())))
+                .andExpect(jsonPath("$.stock", equalTo(newProduct.getStock())))
+                .andExpect(jsonPath("$.description", equalTo(newProduct.getDescription())))
+                .andExpect(jsonPath("$.createdDate", notNullValue()))
+                .andExpect(jsonPath("$.lastModifiedDate", notNullValue()));
+    }
+
+    @Test
+    @Transactional
+    public void addProductIllegalArgument() throws Exception {
+        Product newProduct = new Product();
+        newProduct.setProductName("kiwi");
+        newProduct.setPrice(-1);
+        String newProductString = objectMapper.writeValueAsString(newProduct);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(newProductString);
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(400));
     }
 }

@@ -15,6 +15,16 @@ public class ProductRequest {
     @NotBlank
     private String imageUrl;
 
+    @NotNull
+    @Min(0)
+    private Integer price;
+
+    @NotNull
+    @Min(0)
+    private Integer stock;
+
+    private String description;
+
     public String getImageUrl() {
         return imageUrl;
     }
@@ -62,15 +72,4 @@ public class ProductRequest {
     public void setDescription(String description) {
         this.description = description;
     }
-
-    @NotNull
-    @Min(0)
-    private Integer price;
-
-    @NotNull
-    @Min(0)
-    private Integer stock;
-
-    private String description;
-
 }
