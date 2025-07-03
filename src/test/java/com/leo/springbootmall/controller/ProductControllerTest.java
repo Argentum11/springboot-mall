@@ -99,4 +99,65 @@ class ProductControllerTest {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(400));
     }
+
+    @Test
+    @Transactional
+    public void updateProductSuccess() throws Exception {
+        Product updatedProduct = new Product();
+        updatedProduct.setProductName("banana");
+        updatedProduct.setCategory(ProductCategory.FOOD);
+        updatedProduct.setImageUrl("www.google.com");
+        updatedProduct.setPrice(10);
+        updatedProduct.setStock(100);
+        updatedProduct.setDescription("a yellow fruit");
+        String updatedProductString = objectMapper.writeValueAsString(updatedProduct);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/products/{productId}", 1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(updatedProductString);
+        ;
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(200))
+                .andExpect(jsonPath("$.productName", equalTo(updatedProduct.getProductName())))
+                .andExpect(jsonPath("$.category", equalTo(updatedProduct.getCategory().name())))
+                .andExpect(jsonPath("$.imageUrl", equalTo(updatedProduct.getImageUrl())))
+                .andExpect(jsonPath("$.price", equalTo(updatedProduct.getPrice())))
+                .andExpect(jsonPath("$.stock", equalTo(updatedProduct.getStock())))
+                .andExpect(jsonPath("$.description", equalTo(updatedProduct.getDescription())))
+                .andExpect(jsonPath("$.createdDate", notNullValue()))
+                .andExpect(jsonPath("$.lastModifiedDate", notNullValue()));
+    }
+
+    @Test
+    @Transactional
+    public void updateProductInvalidArgument() throws Exception {
+        Product updatedProduct = new Product();
+        String updatedProductString = objectMapper.writeValueAsString(updatedProduct);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/products/{productId}", 1)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(updatedProductString);
+        ;
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(400));
+    }
+
+    @Test
+    @Transactional
+    public void updateProductNotFound() throws Exception {
+        Product updatedProduct = new Product();
+        updatedProduct.setProductName("banana");
+        updatedProduct.setCategory(ProductCategory.FOOD);
+        updatedProduct.setImageUrl("www.google.com");
+        updatedProduct.setPrice(10);
+        updatedProduct.setStock(100);
+        updatedProduct.setDescription("a yellow fruit");
+        String updatedProductString = objectMapper.writeValueAsString(updatedProduct);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/products/{productId}", -1).contentType(MediaType.APPLICATION_JSON)
+                .content(updatedProductString);
+        ;
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(404));
+    }
 }
