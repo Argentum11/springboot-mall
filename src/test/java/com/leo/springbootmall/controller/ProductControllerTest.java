@@ -16,8 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.awt.*;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -175,5 +174,63 @@ class ProductControllerTest {
         RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/products/{productId}", -1);
         mockMvc.perform(requestBuilder)
                 .andExpect(status().is(204));
+    }
+
+    @Test
+    public void getProducts() throws Exception {
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/products");
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(200))
+                .andExpect(jsonPath("$.page", equalTo(1)))
+                .andExpect(jsonPath("$.limit", equalTo(5)))
+                .andExpect(jsonPath("$.total", equalTo(7)))
+                .andExpect(jsonPath("$.results", hasSize(5)));
+    }
+
+    @Test
+    public void getProductsFiltering() throws Exception {
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/products")
+                .param("category", "CAR")
+                .param("search", "T");
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(200))
+                .andExpect(jsonPath("$.page", equalTo(1)))
+                .andExpect(jsonPath("$.limit", equalTo(5)))
+                .andExpect(jsonPath("$.total", equalTo(2)))
+                .andExpect(jsonPath("$.results", hasSize(2)));
+    }
+
+    @Test
+    public void getProductsSorting() throws Exception {
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/products")
+                .param("orderBy", "price")
+                .param("ascending", "false");
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(200))
+                .andExpect(jsonPath("$.page", equalTo(1)))
+                .andExpect(jsonPath("$.limit", equalTo(5)))
+                .andExpect(jsonPath("$.total", equalTo(7)))
+                .andExpect(jsonPath("$.results", hasSize(5)))
+                .andExpect(jsonPath("$.results[0].productId", equalTo(6)))
+                .andExpect(jsonPath("$.results[1].productId", equalTo(5)))
+                .andExpect(jsonPath("$.results[2].productId", equalTo(7)))
+                .andExpect(jsonPath("$.results[3].productId", equalTo(4)))
+                .andExpect(jsonPath("$.results[4].productId", equalTo(2)));
+    }
+
+    @Test
+    public void getProductsPagination() throws Exception {
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/products")
+                .param("page", "2")
+                .param("limit", "1");
+
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().is(200))
+                .andExpect(jsonPath("$.page", equalTo(2)))
+                .andExpect(jsonPath("$.limit", equalTo(1)))
+                .andExpect(jsonPath("$.total", equalTo(7)))
+                .andExpect(jsonPath("$.results", hasSize(1)));
     }
 }
