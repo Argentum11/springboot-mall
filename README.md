@@ -62,4 +62,4 @@ CREATE TABLE user
       - result list
 - users
   - register new user
-    - validate email uniqueness
+    - validate email uniqueness, format(@Email)
