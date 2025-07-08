@@ -1,6 +1,7 @@
 package com.leo.springbootmall.service.impl;
 
 import com.leo.springbootmall.dao.UserDao;
+import com.leo.springbootmall.dto.LoginRequest;
 import com.leo.springbootmall.dto.UserRegisterRequest;
 import com.leo.springbootmall.model.User;
 import com.leo.springbootmall.service.UserService;
@@ -35,5 +36,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(Integer userId) {
         return userDao.getUserById(userId);
+    }
+
+    @Override
+    public User login(LoginRequest loginRequest) {
+        User existingUser = userDao.getUserByEmail(loginRequest.getEmail());
+        if (existingUser == null) {
+            logger.warn("email {} hasn't registered", loginRequest.getEmail());
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        if (!loginRequest.getPassword().equals(existingUser.getPassword())) {
+            logger.warn("email {} password mismatch", loginRequest.getEmail());
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        return existingUser;
+
     }
 }

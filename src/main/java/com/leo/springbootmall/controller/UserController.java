@@ -1,5 +1,6 @@
 package com.leo.springbootmall.controller;
 
+import com.leo.springbootmall.dto.LoginRequest;
 import com.leo.springbootmall.dto.UserRegisterRequest;
 import com.leo.springbootmall.model.User;
 import com.leo.springbootmall.service.UserService;
@@ -26,5 +27,11 @@ public class UserController {
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    @PostMapping("/users/login")
+    public ResponseEntity<User> login(@RequestBody @Valid LoginRequest loginRequest) {
+        User existingUser = userService.login(loginRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(existingUser);
     }
 }

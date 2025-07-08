@@ -64,3 +64,4 @@ CREATE TABLE user
   - register new user
     - validate email uniqueness, format(@Email)
     - exclude password (@JsonIgnore)
+  - login
