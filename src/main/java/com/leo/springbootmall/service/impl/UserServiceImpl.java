@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -17,6 +18,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDao userDao;
+
+    private final Argon2PasswordEncoder encoder = Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
 
     private final static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -29,6 +32,7 @@ public class UserServiceImpl implements UserService {
             logger.warn("email {} has been registered", userRegisterRequest.getEmail());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
+        userRegisterRequest.setPassword(encoder.encode(userRegisterRequest.getPassword()));
 
         return userDao.addUser(userRegisterRequest);
     }
@@ -46,7 +50,7 @@ public class UserServiceImpl implements UserService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
-        if (!loginRequest.getPassword().equals(existingUser.getPassword())) {
+        if (!encoder.matches(loginRequest.getPassword(), existingUser.getPassword())) {
             logger.warn("email {} password mismatch", loginRequest.getEmail());
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
