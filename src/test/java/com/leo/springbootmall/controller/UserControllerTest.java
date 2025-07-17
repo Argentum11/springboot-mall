@@ -2,6 +2,7 @@ package com.leo.springbootmall.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.leo.springbootmall.dao.UserDao;
+import com.leo.springbootmall.dto.LoginRequest;
 import com.leo.springbootmall.dto.UserRegisterRequest;
 import com.leo.springbootmall.model.User;
 import org.junit.jupiter.api.Test;
@@ -88,6 +89,95 @@ class UserControllerTest {
 
         mockMvc.perform(requestBuilder).andDo(print())
                 .andExpect(status().is(201));
+
+        mockMvc.perform(requestBuilder).andDo(print())
+                .andExpect(status().is(400));
+    }
+
+    @Test
+    @Transactional
+    void loginSuccess() throws Exception {
+        UserRegisterRequest userRegisterRequest = new UserRegisterRequest();
+        userRegisterRequest.setEmail("liam@gmail.com");
+        userRegisterRequest.setPassword("liam");
+        register(userRegisterRequest);
+
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setEmail(userRegisterRequest.getEmail());
+        loginRequest.setPassword(userRegisterRequest.getPassword());
+        String userLoginRequestString = objectMapper.writeValueAsString(loginRequest);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/users/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(userLoginRequestString);
+
+        mockMvc.perform(requestBuilder).andDo(print())
+                .andExpect(status().is(200))
+                .andExpect(jsonPath("userId", notNullValue()))
+                .andExpect(jsonPath("email", equalTo(loginRequest.getEmail())))
+                .andExpect(jsonPath("createdDate", notNullValue()))
+                .andExpect(jsonPath("lastModifiedDate", notNullValue()));
+    }
+
+    @Test
+    @Transactional
+    void loginIncorrectPassword() throws Exception {
+        UserRegisterRequest userRegisterRequest = new UserRegisterRequest();
+        userRegisterRequest.setEmail("liam@gmail.com");
+        userRegisterRequest.setPassword("liam");
+        register(userRegisterRequest);
+
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setEmail(userRegisterRequest.getEmail());
+        loginRequest.setPassword(userRegisterRequest.getPassword() + ".");
+        String userLoginRequestString = objectMapper.writeValueAsString(loginRequest);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/users/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(userLoginRequestString);
+
+        mockMvc.perform(requestBuilder).andDo(print())
+                .andExpect(status().is(401));
+    }
+
+    private void register(UserRegisterRequest userRegisterRequest) throws Exception {
+        String userRegisterRequestString = objectMapper.writeValueAsString(userRegisterRequest);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/users/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(userRegisterRequestString);
+
+        mockMvc.perform(requestBuilder).andDo(print())
+                .andExpect(status().is(201));
+    }
+
+    @Test
+    @Transactional
+    void loginNotRegistered() throws Exception {
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setEmail("liam@gmail.com");
+        loginRequest.setPassword("liam");
+        String userLoginRequestString = objectMapper.writeValueAsString(loginRequest);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/users/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(userLoginRequestString);
+
+        mockMvc.perform(requestBuilder).andDo(print())
+                .andExpect(status().is(401));
+    }
+
+    @Test
+    @Transactional
+    void loginInvalidEmail() throws Exception {
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setEmail("liam");
+        loginRequest.setPassword("liam");
+        String userLoginRequestString = objectMapper.writeValueAsString(loginRequest);
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/users/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(userLoginRequestString);
 
         mockMvc.perform(requestBuilder).andDo(print())
                 .andExpect(status().is(400));
