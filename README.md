@@ -39,6 +39,29 @@ CREATE TABLE users
   created_date       TIMESTAMP    NOT NULL,
   last_modified_date TIMESTAMP    NOT NULL
 );
+
+CREATE TABLE orders
+(
+  order_id           INT       NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  user_id            INT       NOT NULL,
+  order_total        INT       NOT NULL,
+  created_date       TIMESTAMP NOT NULL,
+  last_modified_date TIMESTAMP NOT NULL
+);
+
+CREATE TABLE order_item
+(
+  order_item_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  order_id      INT NOT NULL,
+  product_id    INT NOT NULL,
+  quantity      INT NOT NULL,
+  item_total    INT NOT NULL
+);
+
+INSERT INTO orders (user_id, order_total, created_date, last_modified_date) VALUES (1, 100110, '2022-06-02 16:51:49', '2022-06-02 16:51:49');
+INSERT INTO order_item (order_id, product_id, quantity, item_total) VALUES (1, 1, 2, 60);
+INSERT INTO order_item (order_id, product_id, quantity, item_total) VALUES (1, 3, 5, 50);
+INSERT INTO order_item (order_id, product_id, quantity, item_total) VALUES (1, 4, 1, 100000);
 ```
 
 ## Features
@@ -65,3 +88,5 @@ CREATE TABLE users
     - validate email uniqueness, format(@Email)
     - exclude password (@JsonIgnore)
   - login
+- orders
+  - add order
