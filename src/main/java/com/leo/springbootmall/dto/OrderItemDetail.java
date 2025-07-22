@@ -2,7 +2,7 @@ package com.leo.springbootmall.dto;
 
 import com.leo.springbootmall.model.OrderItem;
 
-public class OrderItemResponse extends OrderItem {
+public class OrderItemDetail extends OrderItem {
     private String productName;
     private String imageUrl;
 

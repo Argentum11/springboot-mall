@@ -1,19 +1,18 @@
 package com.leo.springbootmall.dto;
 
 import com.leo.springbootmall.model.Order;
-import com.leo.springbootmall.model.OrderItem;
 
 import java.util.List;
 
 public class OrderResponse extends Order {
 
-    private List<OrderItemResponse> orderItemResponses;
+    private List<OrderItemDetail> orderItemDetails;
 
-    public List<OrderItemResponse> getOrderItemResponses() {
-        return orderItemResponses;
+    public List<OrderItemDetail> getOrderItemDetails() {
+        return orderItemDetails;
     }
 
-    public void setOrderItemResponses(List<OrderItemResponse> orderItemResponses) {
-        this.orderItemResponses = orderItemResponses;
+    public void setOrderItemDetails(List<OrderItemDetail> orderItemDetails) {
+        this.orderItemDetails = orderItemDetails;
     }
 }

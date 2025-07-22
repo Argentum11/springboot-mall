@@ -1,6 +1,6 @@
 package com.leo.springbootmall.dao;
 
-import com.leo.springbootmall.dto.OrderItemResponse;
+import com.leo.springbootmall.dto.OrderItemDetail;
 import com.leo.springbootmall.model.Order;
 import com.leo.springbootmall.model.OrderItem;
 
@@ -13,5 +13,5 @@ public interface OrderDao {
 
     void addOrderItems(Integer orderId, List<OrderItem> orderItems);
 
-    List<OrderItemResponse> getOrderItemResponsesByOrderId(Integer orderId);
+    List<OrderItemDetail> getOrderItemDetailsByOrderId(Integer orderId);
 }

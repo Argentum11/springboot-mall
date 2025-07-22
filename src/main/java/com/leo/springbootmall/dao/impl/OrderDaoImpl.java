@@ -1,10 +1,10 @@
 package com.leo.springbootmall.dao.impl;
 
 import com.leo.springbootmall.dao.OrderDao;
-import com.leo.springbootmall.dto.OrderItemResponse;
+import com.leo.springbootmall.dto.OrderItemDetail;
 import com.leo.springbootmall.model.Order;
 import com.leo.springbootmall.model.OrderItem;
-import com.leo.springbootmall.rowmapper.OrderItemResponseRowMapper;
+import com.leo.springbootmall.rowmapper.OrderItemDetailRowMapper;
 import com.leo.springbootmall.rowmapper.OrderRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -72,7 +72,7 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public List<OrderItemResponse> getOrderItemResponsesByOrderId(Integer orderId) {
+    public List<OrderItemDetail> getOrderItemDetailsByOrderId(Integer orderId) {
         String searchSql = "SELECT oi.order_item_id, oi.order_id, oi.product_id, oi.quantity, oi.item_total, p.product_name, p.image_url " +
                 "FROM order_item as oi " +
                 "LEFT JOIN product as p ON oi.product_id = p.product_id " +
@@ -80,6 +80,6 @@ public class OrderDaoImpl implements OrderDao {
 
         Map<String, Object> map = new HashMap<>();
         map.put("order_id", orderId);
-        return namedParameterJdbcTemplate.query(searchSql, map, new OrderItemResponseRowMapper());
+        return namedParameterJdbcTemplate.query(searchSql, map, new OrderItemDetailRowMapper());
     }
 }

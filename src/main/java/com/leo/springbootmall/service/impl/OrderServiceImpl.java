@@ -3,7 +3,10 @@ package com.leo.springbootmall.service.impl;
 import com.leo.springbootmall.dao.OrderDao;
 import com.leo.springbootmall.dao.ProductDao;
 import com.leo.springbootmall.dao.UserDao;
-import com.leo.springbootmall.dto.*;
+import com.leo.springbootmall.dto.OrderItemDetail;
+import com.leo.springbootmall.dto.OrderItemRequest;
+import com.leo.springbootmall.dto.OrderRequest;
+import com.leo.springbootmall.dto.OrderResponse;
 import com.leo.springbootmall.model.Order;
 import com.leo.springbootmall.model.OrderItem;
 import com.leo.springbootmall.model.Product;
@@ -23,16 +26,13 @@ import java.util.List;
 @Component
 public class OrderServiceImpl implements OrderService {
 
+    private final static Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
     @Autowired
     private OrderDao orderDao;
-
     @Autowired
     private UserDao userDao;
-
     @Autowired
     private ProductDao productDao;
-
-    private final static Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
 
     @Transactional
     @Override
@@ -92,8 +92,8 @@ public class OrderServiceImpl implements OrderService {
         orderResponse.setCreatedDate(order.getCreatedDate());
         orderResponse.setLastModifiedDate(order.getLastModifiedDate());
 
-        List<OrderItemResponse> orderItemResponses = orderDao.getOrderItemResponsesByOrderId(orderId);
-        orderResponse.setOrderItemResponses(orderItemResponses);
+        List<OrderItemDetail> orderItemDetails = orderDao.getOrderItemDetailsByOrderId(orderId);
+        orderResponse.setOrderItemDetails(orderItemDetails);
         return orderResponse;
     }
 }
