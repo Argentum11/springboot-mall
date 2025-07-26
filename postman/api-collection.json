@@ -385,6 +385,64 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "get orders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.response.to.have.status(200)",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"productName\": \"Tesla model Y\",\n    \"category\": \"CAR\",\n    \"imageUrl\": \"www.google.com\",\n    \"price\": 30,\n    \"stock\": 20,\n    \"description\": \"\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/1/orders?orderBy=order_total&ascending=false&page=1&limit=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"1",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "orderBy",
+									"value": "order_total"
+								},
+								{
+									"key": "ascending",
+									"value": "false"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}

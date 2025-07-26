@@ -3,10 +3,7 @@ package com.leo.springbootmall.service.impl;
 import com.leo.springbootmall.dao.OrderDao;
 import com.leo.springbootmall.dao.ProductDao;
 import com.leo.springbootmall.dao.UserDao;
-import com.leo.springbootmall.dto.OrderItemDetail;
-import com.leo.springbootmall.dto.OrderItemRequest;
-import com.leo.springbootmall.dto.OrderRequest;
-import com.leo.springbootmall.dto.OrderResponse;
+import com.leo.springbootmall.dto.*;
 import com.leo.springbootmall.model.Order;
 import com.leo.springbootmall.model.OrderItem;
 import com.leo.springbootmall.model.Product;
@@ -94,6 +91,36 @@ public class OrderServiceImpl implements OrderService {
 
         List<OrderItemDetail> orderItemDetails = orderDao.getOrderItemDetailsByOrderId(orderId);
         orderResponse.setOrderItemDetails(orderItemDetails);
+        return orderResponse;
+    }
+
+    @Override
+    public List<OrderResponse> getOrders(OrderQueryParams orderQueryParams) {
+        validateUser(orderQueryParams.getUserId());
+        List<OrderResponse> orderResponseList = new ArrayList<>();
+        List<Order> orders = orderDao.getOrders(orderQueryParams);
+        for (Order order : orders) {
+            OrderResponse orderResponse = getOrderResponseFromOrder(order);
+            List<OrderItemDetail> orderItemDetails = orderDao.getOrderItemDetailsByOrderId(order.getOrderId());
+            orderResponse.setOrderItemDetails(orderItemDetails);
+            orderResponseList.add(orderResponse);
+        }
+        return orderResponseList;
+    }
+
+    @Override
+    public Integer countOrders(OrderQueryParams orderQueryParams) {
+        validateUser(orderQueryParams.getUserId());
+        return orderDao.countOrders(orderQueryParams);
+    }
+
+    private OrderResponse getOrderResponseFromOrder(Order order) {
+        OrderResponse orderResponse = new OrderResponse();
+        orderResponse.setOrderId(order.getOrderId());
+        orderResponse.setUserId(order.getUserId());
+        orderResponse.setOrderTotal(order.getOrderTotal());
+        orderResponse.setCreatedDate(order.getCreatedDate());
+        orderResponse.setLastModifiedDate(order.getLastModifiedDate());
         return orderResponse;
     }
 }

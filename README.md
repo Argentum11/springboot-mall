@@ -90,3 +90,6 @@ INSERT INTO order_item (order_id, product_id, quantity, item_total) VALUES (1, 4
   - login
 - orders
   - add order
+  - get orders
+    - sorting
+    - pagination

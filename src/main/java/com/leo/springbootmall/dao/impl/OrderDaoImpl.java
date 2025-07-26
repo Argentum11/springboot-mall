@@ -2,6 +2,7 @@ package com.leo.springbootmall.dao.impl;
 
 import com.leo.springbootmall.dao.OrderDao;
 import com.leo.springbootmall.dto.OrderItemDetail;
+import com.leo.springbootmall.dto.OrderQueryParams;
 import com.leo.springbootmall.model.Order;
 import com.leo.springbootmall.model.OrderItem;
 import com.leo.springbootmall.rowmapper.OrderItemDetailRowMapper;
@@ -52,6 +53,37 @@ public class OrderDaoImpl implements OrderDao {
         } else {
             return orderList.get(0);
         }
+    }
+
+    @Override
+    public List<Order> getOrders(OrderQueryParams orderQueryParams) {
+        String searchSql = "SELECT order_id, user_id, order_total, created_date, last_modified_date FROM orders WHERE user_id=:user_id ";
+
+        // ordering
+        String sort = orderQueryParams.getAscending() ? "ASC" : "DESC";
+        searchSql += "ORDER BY " + orderQueryParams.getOrderBy() + " " + sort + " ";
+
+        // pagination
+        searchSql += "LIMIT :limit OFFSET :offset";
+        Map<String, Object> map = new HashMap<>();
+        map.put("user_id", orderQueryParams.getUserId());
+        map.put("limit", orderQueryParams.getLimit());
+        map.put("offset", (orderQueryParams.getPage() - 1) * orderQueryParams.getLimit());
+
+        List<Order> orders = namedParameterJdbcTemplate.query(searchSql, map, new OrderRowMapper());
+        // TODO check
+        return orders;
+    }
+
+    @Override
+    public Integer countOrders(OrderQueryParams orderQueryParams) {
+        String searchSql = "SELECT COUNT(*) FROM orders WHERE user_id=:user_id ";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("user_id", orderQueryParams.getUserId());
+
+        Integer orderAmount = namedParameterJdbcTemplate.queryForObject(searchSql, map, Integer.class);
+        return orderAmount;
     }
 
     @Override
